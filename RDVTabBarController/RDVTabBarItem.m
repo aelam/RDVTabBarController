@@ -131,10 +131,10 @@
         if (NSFoundationVersionNumber > NSFoundationVersionNumber_iOS_6_1) {
             titleSize = [_title boundingRectWithSize:CGSizeMake(frameSize.width, 20)
                                                     options:NSStringDrawingUsesLineFragmentOrigin
-                                                 attributes:titleAttributes
+                                                 attributes:@{NSFontAttributeName: titleAttributes[NSFontAttributeName]}
                                                     context:nil].size;
             
-            imageStartingY = roundf((frameSize.height - imageSize.height - titleSize.height) / 2);
+            imageStartingY = roundf((frameSize.height - imageSize.height - titleSize.height - _imagePositionAdjustment.vertical - _titlePositionAdjustment.vertical) / 2);
             
             [image drawInRect:CGRectMake(roundf(frameSize.width / 2 - imageSize.width / 2) +
                                          _imagePositionAdjustment.horizontal,
@@ -145,7 +145,7 @@
             
             [_title drawInRect:CGRectMake(roundf(frameSize.width / 2 - titleSize.width / 2) +
                                           _titlePositionAdjustment.horizontal,
-                                          imageStartingY + imageSize.height + _titlePositionAdjustment.vertical,
+                                          imageStartingY + _imagePositionAdjustment.vertical + imageSize.height + _titlePositionAdjustment.vertical,
                                           titleSize.width, titleSize.height)
                 withAttributes:titleAttributes];
         } else {

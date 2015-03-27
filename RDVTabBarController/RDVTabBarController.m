@@ -58,25 +58,12 @@
     [self setTabBarHidden:self.isTabBarHidden animated:NO];
 }
 
-- (UIStatusBarStyle)preferredStatusBarStyle {
-    return self.selectedViewController.preferredStatusBarStyle;
-}
-
-- (UIStatusBarAnimation)preferredStatusBarUpdateAnimation {
-    return self.selectedViewController.preferredStatusBarUpdateAnimation;
-}
-
 - (NSUInteger)supportedInterfaceOrientations {
     UIInterfaceOrientationMask orientationMask = UIInterfaceOrientationMaskAll;
-    for (UIViewController *viewController in [self viewControllers]) {
-        if (![viewController respondsToSelector:@selector(supportedInterfaceOrientations)]) {
-            return UIInterfaceOrientationMaskPortrait;
-        }
-        
-        UIInterfaceOrientationMask supportedOrientations = [viewController supportedInterfaceOrientations];
-        
-        if (orientationMask > supportedOrientations) {
-            orientationMask = supportedOrientations;
+    
+    if ([self.selectedViewController isKindOfClass:[UINavigationController class]]) {
+        if ([((UINavigationController *)self.selectedViewController).topViewController respondsToSelector:@selector(supportedInterfaceOrientations)]) {
+            orientationMask = [((UINavigationController *)self.selectedViewController).topViewController supportedInterfaceOrientations];
         }
     }
     
@@ -84,13 +71,23 @@
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation {
-    for (UIViewController *viewCotroller in [self viewControllers]) {
-        if (![viewCotroller respondsToSelector:@selector(shouldAutorotateToInterfaceOrientation:)] ||
-            ![viewCotroller shouldAutorotateToInterfaceOrientation:toInterfaceOrientation]) {
-            return NO;
+    if ([self.selectedViewController isKindOfClass:[UINavigationController class]]) {
+        if ([((UINavigationController *)self.selectedViewController).topViewController respondsToSelector:@selector(shouldAutorotateToInterfaceOrientation:)]) {
+            return [((UINavigationController *)self.selectedViewController).topViewController shouldAutorotateToInterfaceOrientation:toInterfaceOrientation];
         }
     }
+    
     return YES;
+}
+
+- (BOOL)shouldAutorotate
+{
+    if ([self.selectedViewController isKindOfClass:[UINavigationController class]]) {
+        if ([((UINavigationController *)self.selectedViewController).topViewController respondsToSelector:@selector(shouldAutorotate)]) {
+            return [((UINavigationController *)self.selectedViewController).topViewController shouldAutorotate];
+        }
+    }
+    return NO;
 }
 
 #pragma mark - Methods
@@ -118,19 +115,9 @@
     [[[self selectedViewController] view] setFrame:[[self contentView] bounds]];
     [[self contentView] addSubview:[[self selectedViewController] view]];
     [[self selectedViewController] didMoveToParentViewController:self];
-    
-    [self setNeedsStatusBarAppearanceUpdate];
 }
 
 - (void)setViewControllers:(NSArray *)viewControllers {
-    if (_viewControllers && _viewControllers.count) {
-        for (UIViewController *viewController in _viewControllers) {
-            [viewController willMoveToParentViewController:nil];
-            [viewController.view removeFromSuperview];
-            [viewController removeFromParentViewController];
-        }
-    }
-
     if (viewControllers && [viewControllers isKindOfClass:[NSArray class]]) {
         _viewControllers = [viewControllers copy];
         
@@ -178,7 +165,7 @@
 - (UIView *)contentView {
     if (!_contentView) {
         _contentView = [[UIView alloc] init];
-        [_contentView setBackgroundColor:[UIColor whiteColor]];
+        [_contentView setBackgroundColor:[UIColor clearColor]];
         [_contentView setAutoresizingMask:(UIViewAutoresizingFlexibleWidth|
                                            UIViewAutoresizingFlexibleHeight)];
     }

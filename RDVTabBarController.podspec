@@ -7,7 +7,7 @@ Pod::Spec.new do |s|
   s.license      = { :type => 'MIT', :file => 'LICENSE' }
   s.author       = { "Robert Dimitrov" => "robert_dimitrov@me.com" }
   s.platform     = :ios, '5.0'
-  s.source       = { :git => "tp://ph.benemind.com/diffusion/RDVTABBAR/rdvtabbarcontroller.git", :tag => s.version.to_s }
+  s.source       = { :git => "http://ph.benemind.com/diffusion/RDVTABBAR/rdvtabbarcontroller.git", :tag => s.version.to_s }
   s.source_files  = 'RDVTabBarController', 'RDVTabBarController/**/*.{h,m}'
   s.framework = 'UIKit', 'CoreGraphics', 'Foundation'
   s.requires_arc = true

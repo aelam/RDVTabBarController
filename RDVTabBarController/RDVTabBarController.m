@@ -58,6 +58,15 @@
     [self setTabBarHidden:self.isTabBarHidden animated:NO];
 }
 
+-(void)viewDidLayoutSubviews{
+    [super viewDidLayoutSubviews];
+    [self setTabBarHidden:self.isTabBarHidden animated:NO];
+}
+
+- (UIStatusBarStyle)preferredStatusBarStyle {
+    return self.selectedViewController.preferredStatusBarStyle;
+}
+
 - (UIInterfaceOrientationMask)supportedInterfaceOrientations {
     UIInterfaceOrientationMask orientationMask = UIInterfaceOrientationMaskAll;
     

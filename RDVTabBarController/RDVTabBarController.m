@@ -186,7 +186,7 @@
     
     __weak RDVTabBarController *weakSelf = self;
     
-    void (^block)() = ^{
+    void (^block)(void) = ^{
         CGSize viewSize = weakSelf.view.bounds.size;
         CGFloat tabBarStartingY = viewSize.height;
         CGFloat contentViewHeight = viewSize.height;
@@ -206,6 +206,7 @@
         
         [[weakSelf tabBar] setFrame:CGRectMake(0, tabBarStartingY, viewSize.width, tabBarHeight)];
         [[weakSelf contentView] setFrame:CGRectMake(0, 0, viewSize.width, contentViewHeight)];
+        [[[self selectedViewController] view] setFrame:[[self contentView] bounds]];
     };
     
     void (^completion)(BOOL) = ^(BOOL finished){
